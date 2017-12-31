@@ -4,14 +4,14 @@
 // nsteps:     number of parts the object will be split into before being bent 
 module cylindric_bend(dimensions, radius, nsteps = $fn) {
   step_angle = nsteps == 0 ? $fa : atan(dimensions.y/(radius * nsteps));
-  steps = nsteps == 0 ? dimensions.y/ (tan(step_angle) * radius) : nsteps;
+  steps = ceil(nsteps == 0 ? dimensions.y/ (tan(step_angle) * radius) : nsteps);
   step_width = dimensions.y / steps;
   {
     intersection() {
       children();
       cube([dimensions.x, step_width/2, dimensions.z]);
     }      
-    for (step = [1:ceil(steps)]) {
+    for (step = [1:steps]) {
       translate([0, radius * sin(step * step_angle), radius * (1 - cos(step * step_angle))])
         rotate(step_angle * step, [1, 0, 0])
           translate([0, -step * step_width, 0])
@@ -37,14 +37,14 @@ module parabolic_bend(dimensions, steepness, nsteps = $fn) {
 
   max_y = dimensions.y / sqrt(1 + steepness);
   ysw = nsteps == 0 ? tan($fa) / (2 * steepness) : max_y / nsteps;
-  steps = nsteps == 0 ? max_y / ysw : nsteps;
+  steps = ceil(nsteps == 0 ? max_y / ysw : nsteps);
   {
     intersection() {
       children();
       cube([dimensions.x, ysw/2, dimensions.z]);
     }      		
 
-    for (step = [1:ceil(steps)]) {
+    for (step = [1:steps]) {
       curr_flat = flat_width(step, ysw);
       acc_flat = acc_y(step - 1, ysw);
       angle = atan(2 * steepness * step * ysw);
