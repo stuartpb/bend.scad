@@ -1,3 +1,9 @@
+//!OpenSCAD
+// title      : OpenSCAD bend procedures
+// author     : flavius on Thingiverse, Stuart P. Bentley (@stuartpb)
+// version    : 1.0.0
+// file       : bend.scad
+
 // Bend flat object on the cylinder width specified radius
 // dimensions: vector with dimensions of the object that should be bent
 // radius:     distance of the cylinder axis
