@@ -24,7 +24,7 @@ module cylindric_bend(dimensions, radius, nsteps = $fn) {
 	}
 }
 
-// Bend flat object on parabole
+// Bend flat object on parabola
 // dimensions: vector with dimensions of the object that should be bent
 // steepness:  coeficient 'a' of the function 'y = a * x^2'
 // nsteps:     number of parts the object will be split into before being bent 
