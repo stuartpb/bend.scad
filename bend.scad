@@ -9,6 +9,17 @@
 // dimensions: vector with dimensions of the object that should be bent
 // radius:     distance of the cylinder axis
 // nsteps:     number of parts the object will be split into before being bent 
+
+module cylindric_bend_step(radius, step, step_angle, step_width, dimensions){
+  translate([0, radius * sin(step * step_angle), radius * (1 - cos(step * step_angle))])
+    rotate(step_angle * step, [1, 0, 0])
+    translate([0, -step * step_width, 0])
+    intersection() {
+    children();
+    translate([0, (step - 0.5) * step_width, 0])
+      cube([dimensions.x, step_width, dimensions.z]);
+  }
+}
 module cylindric_bend(dimensions, radius, nsteps = $fn) {
   step_angle = nsteps == 0 ? $fa : atan(dimensions.y/(radius * nsteps));
   steps = ceil(nsteps == 0 ? dimensions.y/ (tan(step_angle) * radius) : nsteps);
@@ -17,16 +28,12 @@ module cylindric_bend(dimensions, radius, nsteps = $fn) {
     intersection() {
       children();
       cube([dimensions.x, step_width/2, dimensions.z]);
-    }      
-    for (step = [1:steps]) {
-      translate([0, radius * sin(step * step_angle), radius * (1 - cos(step * step_angle))])
-        rotate(step_angle * step, [1, 0, 0])
-          translate([0, -step * step_width, 0])
-            intersection() {
-              children();
-              translate([0, (step - 0.5) * step_width, 0])
-                cube([dimensions.x, step_width, dimensions.z]);
-            }
+    }
+    for (step = [2:steps]) {
+      hull(){
+        cylindric_bend_step(radius, step, step_angle, step_width, dimensions) children();
+        cylindric_bend_step(radius, step-1, step_angle, step_width, dimensions) children();
+      }
     }
   }
 }
